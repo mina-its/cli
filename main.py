@@ -323,10 +323,6 @@ def new_package_create_database(package_name, sync_collections):
     sys.stdout.flush()
     user_password = input()
 
-    sys.stdout.write("Please enter app default domain address (ex. admin.test.com): ")
-    sys.stdout.flush()
-    default_address = input()
-
     important("creating database ...")
     role_root_id = ObjectId()
 
@@ -392,18 +388,17 @@ def new_package_create_database(package_name, sync_collections):
         ]}
     ]})
 
-    info("create configPackage ...")
-    db["configPackage"].insert_one(
+    info("create configs ...")
+    db["configs"].insert_one(
         {
             "_id": ObjectId(),
             "apps": [{
                 "_id": ObjectId(),
-                "address": default_address,
                 "title": package_name,
                 "defaultTemplate": "sys.default",
                 "defaultLocale": 1033,
                 "home": "home",
-                "locales": ["1033"]
+                "locales": [1033]
             }]
         })
 
@@ -416,7 +411,7 @@ def new_package_create_database(package_name, sync_collections):
             "name": package_name,
             "enabled": True,
             "syncCollections": sync_collections,
-            "initCollections": ["configPackage", "users"]
+            "initCollections": ["configs", "users"]
         })
         db["configSys"].replace_one({"_id": config_sys["_id"]}, config_sys)
 
